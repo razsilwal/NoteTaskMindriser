@@ -12,17 +12,17 @@
       {% csrf_token %}
         <div class="mb-3">
           <label for="name" class="form-label">Name</label>
-          <input type="text" class="form-control" id="name" aria-describedby="emailHelp">
+          <input type="text" class="form-control" name="name" id="name" aria-describedby="emailHelp">
         </div>
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
-          <textarea class="form-control" placeholder="Enter a description" id="floatingTextarea"></textarea>
+          <textarea class="form-control" name="description" placeholder="Enter a description" id="floatingTextarea"></textarea>
         </div>
         <div class="mb-3">
           <label for="notetype" class="form-label">NoteType</label>
-          <select class="form-select" id="notetype" aria-label="Default select example">
+          <select class="form-select" name="type" id="notetype" aria-label="Default select example">
             {% for notetype in notetypes %}
-            <option value="1">{{notetype.name}}</option>
+            <option value="{{notetype.id}}">{{notetype.name}}</option>
             {% endfor %}
           </select>        
         </div>
