@@ -21,7 +21,7 @@ from base.views import home, createNote, notetype, create_notetype
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", home, name='home'),
-    path("createnote/", createNote, name='notetype'),
-    path("notetype/",notetype, name='create_note'),
+    path("createnote/", createNote, name='note'),
+    path("notetype/",notetype, name='notetype'),
     path("createnotetype/",create_notetype, name='create_notetype'),
 ]
