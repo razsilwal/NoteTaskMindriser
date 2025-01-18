@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from . models import Note, NoteType
-from .forms import NoteTypeForm
+from .forms import NoteTypeForm, NoteForm
 from django.contrib import messages
 # Create your views here.
 
@@ -12,10 +12,11 @@ def home(request):
     }
     return render(request, 'home.html', context=data)
 
+# view all the notetype 
 def notetype(request):
     note_obj = NoteType.objects.all()
     data = {
-        'notetype':note_obj
+        'notetypes':note_obj
     }
     return render(request, 'notetype.html', context=data)
 
@@ -53,3 +54,59 @@ def create_notetype(request):
         'form' : notetype_form
         }
     return render(request, 'create_notetype.html', context=data)
+
+def edit_note_view(request, pk):
+    note_obj = Note.objects.get(id=pk)
+    if request.method == 'POST':
+        note_form_obj = NoteForm(data=request.POST, instance=note_obj)
+        if note_form_obj.is_valid():
+            note_form_obj.save()
+            messages.success(request, 'Note updated sucessfully ')
+            return redirect('home')
+        
+        else:
+            messages.error(request, note_form_obj.errors)
+
+    note_form_obj = NoteForm(instance=note_obj)
+    data = {
+        'form':note_form_obj
+    }
+    return render(request, 'edit_note.html', context=data)
+
+def delete_note(request, pk):
+    note_obj = Note.objects.get(id=pk)
+    note_obj.delete()
+    messages.success(request, 'Note deleted sucessfully ')
+    return redirect('home')
+
+def delete_all_note(request):
+    note_obj_all = Note.objects.all()
+    note_obj_all.delete()
+    messages.success(request, 'All note deleted sucessfully ')
+    return redirect('home')
+
+
+# Edited of NoteType 
+def edit_notetype(request, pk):
+    notetype_obj = NoteType.objects.get(id=pk)
+    if request.method == 'POST':
+        notetype_form_obj = NoteTypeForm(data=request.POST, instance=notetype_obj)
+        if notetype_form_obj.is_valid():
+            notetype_form_obj.save()
+            messages.success(request, 'Notetype Updated Sucessfully !! ')
+            return redirect('notetype')
+        else:
+            messages.error(request, notetype_form_obj.errors)
+
+    notetype_form_obj = NoteTypeForm(instance=notetype_obj)
+    data = {
+        'form': notetype_form_obj
+    }
+    return render(request, 'edit_notetype.html', context = data)
+
+def delete_notetype(request, pk):
+    notetype_obj = NoteType.objects.get(id=pk)
+    notetype_obj.delete()
+    messages.success(request, 'Notetype deleted sucessfully ')
+    return redirect('notetype')
+

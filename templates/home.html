@@ -8,8 +8,25 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 <body>
+
     
-    <h1> Welcome to the Home Page </h1>
+  {% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'success' %}
+   <div class="alert alert-sucess alert-dismissible fade show" role="alert"> {{message}} 
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+   </div>
+    {% elif message.tags == 'error' %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert"> {{message}} 
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+     </div>
+     
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+<td><a href="{% url 'delete_all_note' %}"><button type="button" class="btn btn-danger">Delete all notes</button>
+
     <table class="table table-striped">
         <thead>
           <tr>
@@ -17,6 +34,7 @@
             <th scope="col">Name</th>
             <th scope="col">Description</th>
             <th scope="col">Type</th>
+            <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -26,6 +44,10 @@
             <td>{{note.name}}</td>
             <td>{{note.description}}</td>
             <td>{{note.type}}</td>
+            <td><a href="{% url 'edit_note' pk=note.id %}"><button type="button" class="btn btn-warning" >Edit</button></a>
+            <td><a href="{% url 'delete_note' pk=note.id %}"><button type="button" class="btn btn-danger">Delete</button>
+            </a>
+            </td>
           </tr>
           {% endfor %}
         </tbody>
