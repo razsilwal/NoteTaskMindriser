@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from . models import Note, NoteType
-from .forms import NoteTypeForm, NoteForm
+from .forms import NoteTypeForm, NoteForm, UserForm
 from django.contrib import messages
+from django.contrib.auth.hashers import make_password
 # Create your views here.
 
 def home(request):
@@ -109,4 +110,24 @@ def delete_notetype(request, pk):
     notetype_obj.delete()
     messages.success(request, 'Notetype deleted sucessfully ')
     return redirect('notetype')
+
+def register_view(request):
+    if request.method == 'POST':
+        password = request.POST.get('password')
+        hash_password = make_password(password)
+        data = request.POST.copy()
+        data['password'] = hash_password
+        user_form_obj = UserForm(data=data)
+        if user_form_obj.is_valid():
+            user_form_obj.save()
+            messages.success(request, 'Register Sucessfully')
+            return redirect('home')
+        else:
+            messages.error(request, user_form_obj.errors)
+    
+    user_form_obj  = UserForm()
+    data = {
+        'form':user_form_obj
+    }
+    return render(request, 'register.html', context=data)
 
