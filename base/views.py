@@ -4,8 +4,21 @@ from . models import Note, NoteType
 from .forms import NoteTypeForm, NoteForm, UserForm
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate,login
 # Create your views here.
 
+# def home(request):
+    # if request.user.is_authenticated:
+    #     note_obj = Note.objects.all().order_by('id')
+    #     data = {
+    #         'notes':note_obj
+    #     }
+    #     return render(request, 'home.html', context=data)
+
+    # else:
+    #     return redirect('register')
+@login_required
 def home(request):
     note_obj = Note.objects.all().order_by('id')
     data = {
@@ -13,6 +26,7 @@ def home(request):
     }
     return render(request, 'home.html', context=data)
 
+   
 # view all the notetype 
 def notetype(request):
     note_obj = NoteType.objects.all()
@@ -121,7 +135,7 @@ def register_view(request):
         if user_form_obj.is_valid():
             user_form_obj.save()
             messages.success(request, 'Register Sucessfully')
-            return redirect('home')
+            return redirect('login')
         else:
             messages.error(request, user_form_obj.errors)
     
@@ -131,3 +145,23 @@ def register_view(request):
     }
     return render(request, 'register.html', context=data)
 
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+
+        if user != None:
+            login(request,user)
+            messages.success(request, "Login Sucessfully !")
+            return redirect('home')
+        else:
+            messages.error(request, "Invalid Credentials !")
+
+
+    user_form_obj = UserForm()
+    data = {
+        'form':user_form_obj
+    }
+    return render(request, 'login.html', context=data)
